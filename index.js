@@ -124,5 +124,5 @@ function selectAbility(playerId, tickInfo, mostRecentMatchInfo, actionQueue) {
 }
 
 export function getCharacterType() {
-  return CharInfo.type[charType];
+  return "Rogue";
 }
