@@ -22,13 +22,13 @@ export async function runTurn(playerId, tickInfo, mostRecentMatchInfo, actionQue
   const doorSwitchState = BossRoomBot.getDoorSwitch(tickInfo);
 
   // If the bot is standing on the switch, do nothing
-  // if (doorSwitchState && doorSwitchState.isOn) return;
-  //
-  // // If the switch is within a range of 30 units from the bot, move onto the switch
-  // if (doorSwitchState && MathFunctions.distanceSq(myState.position, doorSwitchState.position) < 30) {
-  //   BossRoomBot.followObject(doorSwitchState, 0.1, actionQueue);
-  //   return;
-  // }
+  if (doorSwitchState && doorSwitchState.isOn) return;
+
+  // If the switch is within a range of 30 units from the bot, move onto the switch
+  if (doorSwitchState && MathFunctions.distanceSq(myState.position, doorSwitchState.position) < 30) {
+    BossRoomBot.followObject(doorSwitchState, 0.1, actionQueue);
+    return;
+  }
 
   // If the bot is not near the player, move within range of the player
   const humanPlayer = BossRoomBot.getHumans(tickInfo)[0];
