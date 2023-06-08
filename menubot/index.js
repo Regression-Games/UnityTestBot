@@ -1,7 +1,7 @@
 import {BossRoomBot, CharInfo} from "../bossroom";
 import {RGValidator, RGBot} from "../rg";
 
-const abilityBot = import("../abilitybot/index");
+const abilityBot = import("../abilitybot");
 
 let charType = 1; // fixed to rogue character
 
