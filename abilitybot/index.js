@@ -71,7 +71,7 @@ function selectAbility(playerId, tickInfo, mostRecentMatchInfo, actionQueue) {
       const originalHealth = randomEnemy.health;
       rgValidator.validate(`[${charName}] Damage Given - Offense Ability #` + ability, t + 1000, (newTick) => {
         const enemyState = BossRoomBot.getEnemy(newTick, randomEnemy.id);
-        return enemyState.health < originalHealth;
+        return !enemyState || enemyState.health < originalHealth;
       });
 
     } else {
