@@ -3,7 +3,7 @@ import {RGValidator, RGBot} from "../rg";
 
 const abilityBot = import("../abilitybot/index");
 
-let charType = Math.round(Math.random() * 1000000) % 4;
+let charType = 1; // fixed to rogue character
 
 export function configureBot(characterType) {
   console.log(`Unity bot configureBot function called, charType: ${charType} - characterType: ${characterType}`);
@@ -24,6 +24,8 @@ let stateFlags = {
   "Seat7Button":false,
 }
 
+let playedGame = false;
+
 export async function runTurn(playerId, tickInfo, mostRecentMatchInfo, actionQueue) {
 
   // On each state, run through the validations and see if any failed or passed
@@ -38,46 +40,56 @@ export async function runTurn(playerId, tickInfo, mostRecentMatchInfo, actionQue
   switch (sceneName) {
     case "MainMenu":
 
-      const hostButton = getInteractableButton(tickInfo, "RGHostButton");
-      if (hostButton && stateFlags["StartWithRGButton"] && !stateFlags["RGHostButton"]) {
-        clickButton(hostButton.id, actionQueue);
-        stateFlags["RGHostButton"] = true
-      }
+      if (playedGame) {
+        botComplete = true;
+      } else {
+        const hostButton = getInteractableButton(tickInfo, "RGHostButton");
+        if (hostButton && stateFlags["StartWithRGButton"] && !stateFlags["RGHostButton"]) {
+          clickButton(hostButton.id, actionQueue);
+          stateFlags["RGHostButton"] = true
+        }
 
-      const startButton = getInteractableButton(tickInfo, "StartWithRGButton");
-      if (startButton && stateFlags["SelectProfileButton"] && !stateFlags["StartWithRGButton"]) {
-        clickButton(startButton.id, actionQueue);
-        stateFlags["StartWithRGButton"] = true
-      }
+        const startButton = getInteractableButton(tickInfo, "StartWithRGButton");
+        if (startButton && stateFlags["SelectProfileButton"] && !stateFlags["StartWithRGButton"]) {
+          clickButton(startButton.id, actionQueue);
+          stateFlags["StartWithRGButton"] = true
+        }
 
-      const selectProfileButton = getInteractableButton(tickInfo, "SelectProfileButton");
-      if (selectProfileButton && stateFlags["ProfileMenuButton"] && !stateFlags["SelectProfileButton"]) {
-        clickButton(selectProfileButton.id, actionQueue);
-        stateFlags["SelectProfileButton"] = true
-      }
+        const selectProfileButton = getInteractableButton(tickInfo, "SelectProfileButton");
+        if (selectProfileButton && stateFlags["ProfileMenuButton"] && !stateFlags["SelectProfileButton"]) {
+          clickButton(selectProfileButton.id, actionQueue);
+          stateFlags["SelectProfileButton"] = true
+        }
 
-      const profileMenuButton = getInteractableButton(tickInfo, "ProfileMenuButton");
-      if (profileMenuButton && !stateFlags["ProfileMenuButton"]) {
-        clickButton(profileMenuButton.id, actionQueue);
-        stateFlags["ProfileMenuButton"] = true
+        const profileMenuButton = getInteractableButton(tickInfo, "ProfileMenuButton");
+        if (profileMenuButton && !stateFlags["ProfileMenuButton"]) {
+          clickButton(profileMenuButton.id, actionQueue);
+          stateFlags["ProfileMenuButton"] = true
+        }
       }
 
       break;
     case "CharSelect":
-      const readyButton = getInteractableButton(tickInfo, "ReadyButton");
-      if (readyButton && stateFlags["Seat7Button"] && !stateFlags["ReadyButton"]) {
-        clickButton(readyButton.id, actionQueue);
-        stateFlags["ReadyButton"] = true
-      }
+      if (playedGame) {
+        botComplete = true;
+      } else {
+        const readyButton = getInteractableButton(tickInfo, "ReadyButton");
+        if (readyButton && stateFlags["Seat7Button"] && !stateFlags["ReadyButton"]) {
+          clickButton(readyButton.id, actionQueue);
+          stateFlags["ReadyButton"] = true
+        }
 
-      const seat7Button = getInteractableButton(tickInfo, "Seat7Button");
-      if (seat7Button && !stateFlags["Seat7Button"]) {
-        clickButton(seat7Button.id, actionQueue);
-        stateFlags["Seat7Button"] = true
+        const seat7Button = getInteractableButton(tickInfo, "Seat7Button");
+        if (seat7Button && !stateFlags["Seat7Button"]) {
+          clickButton(seat7Button.id, actionQueue);
+          stateFlags["Seat7Button"] = true
+        }
       }
 
       break;
     case "BossRoom":
+      playedGame = true;
+
       const GameHUDStartButton = getInteractableButton(tickInfo, "GameHUDStartButton");
       if (GameHUDStartButton && stateFlags["CheatsCancelButton"] && !stateFlags["GameHUDStartButton"]) {
         clickButton(GameHUDStartButton.id, actionQueue);
@@ -95,6 +107,7 @@ export async function runTurn(playerId, tickInfo, mostRecentMatchInfo, actionQue
         console.log(`Calling abilityBot.runTurn ...`)
         await abilityBot.runTurn(playerId, tickInfo, mostRecentMatchInfo, actionQueue)
       }
+
       break;
     case "PostGame":
     default:
