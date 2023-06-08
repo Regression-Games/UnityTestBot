@@ -89,13 +89,13 @@ export async function runTurn(playerId, tickInfo, mostRecentMatchInfo, actionQue
         clickButton(CheatsCancelButton.id, actionQueue);
         stateFlags["CheatsCancelButton"] = true
       }
-      break;
 
       if( stateFlags["CheatsCancelButton"] && stateFlags["GameHUDStartButton"]) {
         // run the ability bot
         console.log(`Calling abilityBot.runTurn ...`)
         await abilityBot.runTurn(playerId, tickInfo, mostRecentMatchInfo, actionQueue)
       }
+      break;
     case "PostGame":
     default:
       // teardown myself
