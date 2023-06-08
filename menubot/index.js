@@ -93,6 +93,7 @@ export async function runTurn(playerId, tickInfo, mostRecentMatchInfo, actionQue
 
       if( stateFlags["CheatsCancelButton"] && stateFlags["GameHUDStartButton"]) {
         // run the ability bot
+        console.log(`Calling abilityBot.runTurn ...`)
         await abilityBot.runTurn(playerId, tickInfo, mostRecentMatchInfo, actionQueue)
       }
     case "PostGame":
