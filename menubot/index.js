@@ -1,6 +1,8 @@
 import {BossRoomBot, CharInfo} from "../bossroom";
 import {RGValidator, RGBot} from "../rg";
 
+const abilityBot = await import("../abilitybot/index");
+
 let charType = Math.round(Math.random() * 1000000) % 4;
 
 export function configureBot(characterType) {
@@ -75,9 +77,28 @@ export async function runTurn(playerId, tickInfo, mostRecentMatchInfo, actionQue
       }
 
       break;
+    case "BossRoom":
+      const GameHUDStartButton = getInteractableButton(tickInfo, "GameHUDStartButton");
+      if (GameHUDStartButton && stateFlags["CheatsCancelButton"] && !stateFlags["GameHUDStartButton"]) {
+        clickButton(GameHUDStartButton.id, actionQueue);
+        stateFlags["GameHUDStartButton"] = true
+      }
+
+      const CheatsCancelButton = getInteractableButton(tickInfo, "CheatsCancelButton");
+      if (CheatsCancelButton && !stateFlags["CheatsCancelButton"]) {
+        clickButton(CheatsCancelButton.id, actionQueue);
+        stateFlags["CheatsCancelButton"] = true
+      }
+      break;
+
+      if( stateFlags["CheatsCancelButton"] && stateFlags["GameHUDStartButton"]) {
+        // run the ability bot
+        await abilityBot.runTurn(playerId, tickInfo, mostRecentMatchInfo, actionQueue)
+      }
+    case "PostGame":
     default:
       // teardown myself
-      console.log(`Game started, bot is Complete`)
+      console.log(`Game ended, bot is Complete`)
       botComplete = true;
       break;
   }
