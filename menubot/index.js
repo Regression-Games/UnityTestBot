@@ -1,7 +1,7 @@
 import {BossRoomBot, CharInfo} from "../bossroom";
 import {RGValidator, RGBot} from "../rg";
 
-const abilityBot = await import("../abilitybot/index");
+const abilityBot = import("../abilitybot/index");
 
 let charType = Math.round(Math.random() * 1000000) % 4;
 
