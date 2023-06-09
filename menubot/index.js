@@ -1,8 +1,6 @@
 import {BossRoomBot, CharInfo} from "../bossroom";
 import {RGValidator, RGBot} from "../rg";
 
-const abilityBot = import("../abilitybot/index");
-
 let charType = 1; // fixed to rogue character
 
 export function configureBot(characterType) {
@@ -94,22 +92,13 @@ export async function runTurn(playerId, tickInfo, mostRecentMatchInfo, actionQue
       if (GameHUDStartButton && stateFlags["CheatsCancelButton"] && !stateFlags["GameHUDStartButton"]) {
         clickButton(GameHUDStartButton.id, actionQueue);
         stateFlags["GameHUDStartButton"] = true
-      } else {
-        stateFlags["GameHUDStartButton"] = true
       }
 
       const CheatsCancelButton = getInteractableButton(tickInfo, "CheatsCancelButton");
       if (CheatsCancelButton && !stateFlags["CheatsCancelButton"]) {
         clickButton(CheatsCancelButton.id, actionQueue);
         stateFlags["CheatsCancelButton"] = true
-      } else {
-        stateFlags["CheatsCancelButton"] = true
       }
-
-      // run the ability bot
-      console.log(`Calling abilityBot.runTurn ...`)
-      console.log(`${JSON.stringify(abilityBot)}`)
-      await abilityBot.runTurn(playerId, tickInfo, mostRecentMatchInfo, actionQueue)
 
       break;
     case "PostGame":
