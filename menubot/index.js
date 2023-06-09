@@ -1,7 +1,7 @@
 import {BossRoomBot, CharInfo} from "../bossroom";
 import {RGValidator, RGBot} from "../rg";
 
-const abilityBot = import("../abilitybot");
+const abilityBot = import("../abilitybot/index");
 
 let charType = 1; // fixed to rogue character
 
@@ -91,30 +91,25 @@ export async function runTurn(playerId, tickInfo, mostRecentMatchInfo, actionQue
       playedGame = true;
 
       const GameHUDStartButton = getInteractableButton(tickInfo, "GameHUDStartButton");
-      const CheatsCancelButton = getInteractableButton(tickInfo, "CheatsCancelButton");
-      if (!GameHUDStartButton && !CheatsCancelButton) {
-        stateFlags["CheatsCancelButton"] = true
-        stateFlags["GameHUDStartButton"] = true
-      }
-
-      if( stateFlags["CheatsCancelButton"] && stateFlags["GameHUDStartButton"]) {
-        // run the ability bot
-        console.log(`Calling abilityBot.runTurn ...`)
-        console.log(`${JSON.stringify(abilityBot)}`)
-        await abilityBot.runTurn(playerId, tickInfo, mostRecentMatchInfo, actionQueue)
-      }
-
-
       if (GameHUDStartButton && stateFlags["CheatsCancelButton"] && !stateFlags["GameHUDStartButton"]) {
         clickButton(GameHUDStartButton.id, actionQueue);
         stateFlags["GameHUDStartButton"] = true
+      } else {
+        stateFlags["GameHUDStartButton"] = true
       }
 
-
+      const CheatsCancelButton = getInteractableButton(tickInfo, "CheatsCancelButton");
       if (CheatsCancelButton && !stateFlags["CheatsCancelButton"]) {
         clickButton(CheatsCancelButton.id, actionQueue);
         stateFlags["CheatsCancelButton"] = true
+      } else {
+        stateFlags["CheatsCancelButton"] = true
       }
+
+      // run the ability bot
+      console.log(`Calling abilityBot.runTurn ...`)
+      console.log(`${JSON.stringify(abilityBot)}`)
+      await abilityBot.runTurn(playerId, tickInfo, mostRecentMatchInfo, actionQueue)
 
       break;
     case "PostGame":
