@@ -33,7 +33,7 @@ export async function runTurn(playerId, tickInfo, mostRecentMatchInfo, actionQue
   const sceneName = tickInfo.sceneName;
 
   // too spammy but good for debugging
-  console.log(`Processing tickInfo: ${JSON.stringify(tickInfo)}`)
+  //console.log(`Processing tickInfo: ${JSON.stringify(tickInfo)}`)
 
   switch (sceneName) {
     case "MainMenu":
