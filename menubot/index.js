@@ -90,20 +90,27 @@ export async function runTurn(playerId, tickInfo, mostRecentMatchInfo, actionQue
     case "BossRoom":
       playedGame = true;
 
+      const GameHUDStartButton = getInteractableButton(tickInfo, "GameHUDStartButton");
+      const CheatsCancelButton = getInteractableButton(tickInfo, "CheatsCancelButton");
+      if (!GameHUDStartButton && !CheatsCancelButton) {
+        stateFlags["CheatsCancelButton"] = true
+        stateFlags["GameHUDStartButton"] = true
+      }
 
       if( stateFlags["CheatsCancelButton"] && stateFlags["GameHUDStartButton"]) {
         // run the ability bot
         console.log(`Calling abilityBot.runTurn ...`)
+        console.log(`${JSON.stringify(abilityBot)}`)
         await abilityBot.runTurn(playerId, tickInfo, mostRecentMatchInfo, actionQueue)
       }
 
-      const GameHUDStartButton = getInteractableButton(tickInfo, "GameHUDStartButton");
+
       if (GameHUDStartButton && stateFlags["CheatsCancelButton"] && !stateFlags["GameHUDStartButton"]) {
         clickButton(GameHUDStartButton.id, actionQueue);
         stateFlags["GameHUDStartButton"] = true
       }
 
-      const CheatsCancelButton = getInteractableButton(tickInfo, "CheatsCancelButton");
+
       if (CheatsCancelButton && !stateFlags["CheatsCancelButton"]) {
         clickButton(CheatsCancelButton.id, actionQueue);
         stateFlags["CheatsCancelButton"] = true
