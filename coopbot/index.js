@@ -17,32 +17,35 @@ export function configureBot(characterType) {
  */
 export async function runTurn(playerId, tickInfo, mostRecentMatchInfo, actionQueue) {
 
-  // First, get all the information needed to perform the various checks
-  const myState = BossRoomBot.getAlly(tickInfo, playerId);
-  const doorSwitchState = BossRoomBot.getDoorSwitch(tickInfo);
 
-  // If the bot is standing on the switch, do nothing
-  if (doorSwitchState && doorSwitchState.isOn) return;
+  if ("BossRoom" == tickInfo.sceneName) {
 
-  // If the switch is within a range of 30 units from the bot, move onto the switch
-  if (doorSwitchState && MathFunctions.distanceSq(myState.position, doorSwitchState.position) < 30) {
-    BossRoomBot.followObject(doorSwitchState, 0.1, actionQueue);
-    return;
+    // First, get all the information needed to perform the various checks
+    const myState = BossRoomBot.getAlly(tickInfo, playerId);
+    const doorSwitchState = BossRoomBot.getDoorSwitch(tickInfo);
+
+    // If the bot is standing on the switch, do nothing
+    if (doorSwitchState && doorSwitchState.isOn) return;
+
+    // If the switch is within a range of 30 units from the bot, move onto the switch
+    if (doorSwitchState && MathFunctions.distanceSq(myState.position, doorSwitchState.position) < 30) {
+      BossRoomBot.followObject(doorSwitchState, 0.1, actionQueue);
+      return;
+    }
+
+    // If the bot is not near the player, move within range of the player
+    const humanPlayer = BossRoomBot.getHumans(tickInfo)[0];
+    if (humanPlayer && MathFunctions.distanceSq(humanPlayer.position, myState.position) > 7) {
+      BossRoomBot.followObject(humanPlayer, 2, actionQueue);
+      return;
+    }
+
+    // Otherwise, attack nearby enemies, if there is one
+    const nearbyEnemy = BossRoomBot.nearestEnemy(tickInfo, myState.position);
+    if (nearbyEnemy) {
+      BossRoomBot.startAbility(1, nearbyEnemy.position, nearbyEnemy.id, actionQueue);
+    }
   }
-
-  // If the bot is not near the player, move within range of the player
-  const humanPlayer = BossRoomBot.getHumans(tickInfo)[0];
-  if (humanPlayer && MathFunctions.distanceSq(humanPlayer.position, myState.position) > 7) {
-    BossRoomBot.followObject(humanPlayer, 2, actionQueue);
-    return;
-  }
-
-  // Otherwise, attack nearby enemies, if there is one
-  const nearbyEnemy = BossRoomBot.nearestEnemy(tickInfo, myState.position);
-  if (nearbyEnemy) {
-    BossRoomBot.startAbility(1, nearbyEnemy.position, nearbyEnemy.id, actionQueue);
-  }
-
 }
 
 /**
