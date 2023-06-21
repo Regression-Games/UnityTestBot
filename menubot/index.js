@@ -24,6 +24,8 @@ let stateFlags = {
 
 let playedGame = false;
 
+let lastEnemyId = -1;
+
 export async function runTurn(playerId, tickInfo, mostRecentMatchInfo, actionQueue) {
 
   // On each state, run through the validations and see if any failed or passed
@@ -100,6 +102,22 @@ export async function runTurn(playerId, tickInfo, mostRecentMatchInfo, actionQue
         stateFlags["CheatsCancelButton"] = true
       }
 
+      if (stateFlags["CheatsCancelButton"] && stateFlags["GameHUDStartButton"]) {
+        // Actually control your player
+        const myPlayer = getMyPlayer(tickInfo)
+        if (myPlayer) {
+          // move toward a random enemy
+          let randomEnemy = BossRoomBot.getEnemy(tickInfo, lastEnemyId);
+          if (!randomEnemy) {
+            randomEnemy = BossRoomBot.nearestEnemy(tickInfo, myPlayer.position);
+          }
+          if (randomEnemy) {
+            lastEnemyId = randomEnemy.id;
+            BossRoomBot.followObject(randomEnemy, 3, actionQueue);
+          }
+        }
+      }
+
       break;
     case "PostGame":
     default:
@@ -109,6 +127,11 @@ export async function runTurn(playerId, tickInfo, mostRecentMatchInfo, actionQue
       break;
   }
 
+}
+
+function getMyPlayer(tickInfo) {
+  const allies = BossRoomBot.getAllies();
+  return allies.find(entry => entry.isHuman == true && entry.isOwner == true)
 }
 
 function getInteractableButton(tickInfo, buttonName) {
