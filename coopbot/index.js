@@ -11,7 +11,7 @@ export function configureBot(rg) {
  *  - If an enemy is within a certain distance of a player, attack that enemy
  *  - If the switch is within a range of 30 units from the bot, move onto the switch
  */
-export async function runTurn(rg) {
+export async function processTick(rg) {
 
   if(rg.getState().sceneName !== "BossRoom") return;
 
