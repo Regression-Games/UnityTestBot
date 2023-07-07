@@ -1,6 +1,5 @@
 
 export function configureBot(rg) {
-  rg.automatedTestMode = true;
   rg.characterType = 3; // fixed to rogue character
 }
 
