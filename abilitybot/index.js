@@ -46,11 +46,8 @@ async function selectAbility(rg) {
   else if (targetType === 1) {
     // The ability requires an enemy.
     
-    if(lastEnemyId !== -1 && rg.entityExists(lastEnemyId)) {
-      // First, try selecting the most recently-referenced enemy
-      currentTarget = await rg.getState(lastEnemyId);
-    }
-    else {
+    currentTarget = await rg.getState(lastEnemyId);
+    if(!currentTarget) {
       // If there was no recent enemy id, or if it's no longer available in the state then find the nearest enemy instead
       currentTarget = await rg.findNearestEntity(null, null, (entity) => { return entity.team === 1 && !entity.broken } )
       if(!currentTarget) {
