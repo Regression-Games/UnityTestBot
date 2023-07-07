@@ -1,107 +1,75 @@
 import { CharInfo } from "../bossroom";
 
-let rg = null;
-
 export function configureBot(rg) {
-
+  rg.automatedTestMode = true;
   rg.isSpawnable = false;
   rg.characterType = CharInfo.type[1]; // fixed to rogue character
   rg.lifecycle = "PERSISTENT";
 }
 
-// flags for clicking the 6 buttons we need to click to start the game
-let stateFlags = {
-  "RGHostButton": false,
-  "StartWithRGButton": false,
-  "SelectProfileButton": false,
-  "ProfileMenuButton": false,
-  "ReadyButton": false,
-  "Seat7Button": false,
-}
+/**
+ * Start running my test scenario
+ */
+export async function startScenario(rg) {
 
-let playedGame = false;
+  // validate we're on the main menu
+  await rg.waitForScene("MainMenu");
 
-export async function processTick(rg) {
+  // get to the character select screen
+  const profileMenuButton = await rg.findEntity("ProfileMenuButton");
+  await rg.entityHasAttribute(profileMenuButton, "interactable", true);
+  rg.performAction("ClickButton", {targetId: profileMenuButton.id});
 
-  switch (rg.getState().sceneName) {
-    case "MainMenu":
+  const selectProfileButton = await rg.findEntity("SelectProfileButton");
+  await rg.entityHasAttribute(selectProfileButton, "interactable", true);
+  rg.performAction("ClickButton", {targetId: selectProfileButton.id});
 
-      if (playedGame) {
-        rg.complete()
-      } else {
-        const hostButton = await getInteractableButton(rg, "RGHostButton");
-        if (hostButton && stateFlags["StartWithRGButton"] && !stateFlags["RGHostButton"]) {
-          rg.performAction("ClickButton", {targetId: hostButton.id});
-          stateFlags["RGHostButton"] = true
-        }
+  const startWithRGButton = await rg.findEntity("StartWithRGButton");
+  await rg.entityHasAttribute(startWithRGButton, "interactable", true);
+  rg.performAction("ClickButton", {targetId: startWithRGButton.id});
 
-        const startButton = await getInteractableButton(rg, "StartWithRGButton");
-        if (startButton && stateFlags["SelectProfileButton"] && !stateFlags["StartWithRGButton"]) {
-          rg.performAction("ClickButton", {targetId: startButton.id});
-          stateFlags["StartWithRGButton"] = true
-        }
+  const rgHostButton = await rg.findEntity("RGHostButton");
+  await rg.entityHasAttribute(rgHostButton, "interactable", true);
+  rg.performAction("ClickButton", {targetId: rgHostButton.id});
 
-        const selectProfileButton = await getInteractableButton(rg, "SelectProfileButton");
-        if (selectProfileButton && stateFlags["ProfileMenuButton"] && !stateFlags["SelectProfileButton"]) {
-          rg.performAction("ClickButton", {targetId: selectProfileButton.id});
-          stateFlags["SelectProfileButton"] = true
-        }
 
-        const profileMenuButton = await getInteractableButton(rg, "ProfileMenuButton");
-        if (profileMenuButton && !stateFlags["ProfileMenuButton"]) {
-          rg.performAction("ClickButton", {targetId: profileMenuButton.id});
-          stateFlags["ProfileMenuButton"] = true
-        }
-      }
+  // now we should be at character select
+  await rg.entityDoesNotExist(profileMenuButton);
+  await rg.entityDoesNotExist(selectProfileButton);
+  await rg.entityDoesNotExist(startWithRGButton);
+  await rg.entityDoesNotExist(rgHostButton);
+  await rg.waitForScene("CharSelect");
 
-      break;
-    case "CharSelect":
-      if (playedGame) {
-        rg.complete()
-      } else {
-        const readyButton = await getInteractableButton(rg, "ReadyButton");
-        if (readyButton && stateFlags["Seat7Button"] && !stateFlags["ReadyButton"]) {
-          rg.performAction("ClickButton", {targetId: readyButton.id});
-          stateFlags["ReadyButton"] = true
-        }
+  // select a character and get to the game screen
+  const seat7Button = await rg.findEntity("Seat7Button");
+  await rg.entityHasAttribute(seat7Button, "interactable", true);
+  rg.performAction("ClickButton", {targetId: seat7Button.id});
 
-        const seat7Button = await getInteractableButton(rg, "Seat7Button");
-        if (seat7Button && !stateFlags["Seat7Button"]) {
-          rg.performAction("ClickButton", {targetId: seat7Button.id});
-          stateFlags["Seat7Button"] = true
-        }
-      }
+  const readyButton = await rg.findEntity("ReadyButton");
+  await rg.entityHasAttribute(readyButton, "interactable", true);
+  rg.performAction("ClickButton", {targetId: readyButton.id});
 
-      break;
-    case "BossRoom":
-      playedGame = true;
 
-      const GameHUDStartButton = await getInteractableButton(rg, "GameHUDStartButton");
-      if (GameHUDStartButton && stateFlags["CheatsCancelButton"] && !stateFlags["GameHUDStartButton"]) {
-        rg.performAction("ClickButton", {targetId: GameHUDStartButton.id});
-        stateFlags["GameHUDStartButton"] = true
-      }
+  // we should be in the dungeon now
+  await rg.entityDoesNotExist(seat7Button);
+  await rg.entityDoesNotExist(readyButton);
+  await rg.waitForScene("BossRoom");
 
-      const CheatsCancelButton = await getInteractableButton(rg, "CheatsCancelButton");
-      if (CheatsCancelButton && !stateFlags["CheatsCancelButton"]) {
-        rg.performAction("ClickButton", {targetId: CheatsCancelButton.id});
-        stateFlags["CheatsCancelButton"] = true
-      }
+  // dismiss the help dialogs so we can start playing
+  const cheatsCancelButton = await rg.findEntity("CheatsCancelButton");
+  await rg.entityHasAttribute(cheatsCancelButton, "interactable", true);
+  rg.performAction("ClickButton", {targetId: cheatsCancelButton.id});
 
-      break;
-    case "PostGame":
-    default:
-      // teardown myself
-      rg.complete()
-      break;
-  }
+  const gameHUDStartButton = await rg.findEntity("GameHUDStartButton");
+  await rg.entityHasAttribute(gameHUDStartButton, "interactable", true);
+  rg.performAction("ClickButton", {targetId: gameHUDStartButton.id});
 
-}
+  // HUD should have been dismissed, 
+  // which means our buttons should also no longer be on the screen
+  await rg.entityDoesNotExist(cheatsCancelButton);
+  await rg.entityDoesNotExist(gameHUDStartButton);
 
-async function getInteractableButton(rg, buttonName) {
-  const button = await rg.findEntity(buttonName);
-  if (button && await rg.entityHasAttribute(button, "interactable", true)) {
-    return button;
-  }
-  return null;
+
+  // we're done!
+  rg.complete()
 }
