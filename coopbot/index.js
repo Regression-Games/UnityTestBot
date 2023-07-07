@@ -1,6 +1,5 @@
 
 export function configureBot(rg) {
-  rg.automatedTestMode = true;
   rg.isSpawnable = false;
   rg.characterType = 3; // Archer
   rg.lifecycle = "PERSISTENT";
