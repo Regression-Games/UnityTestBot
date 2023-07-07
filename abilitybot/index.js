@@ -46,7 +46,7 @@ async function selectAbility(rg) {
   else if (targetType === 1) {
     // The ability requires an enemy.
     
-    if(lastEnemyId && rg.entityExists(lastEnemyId)) {
+    if(lastEnemyId !== -1 && rg.entityExists(lastEnemyId)) {
       // First, try selecting the most recently-referenced enemy
       currentTarget = await rg.getState(lastEnemyId);
     }
