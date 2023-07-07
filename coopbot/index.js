@@ -1,8 +1,7 @@
 
 export function configureBot(rg) {
-  rg.isSpawnable = false;
-  rg.characterType = 3; // Archer
-  rg.lifecycle = "PERSISTENT";
+  rg.automatedTestMode = true;
+  rg.characterType = 3; // fixed to rogue character
 }
 
 /**
@@ -12,7 +11,7 @@ export function configureBot(rg) {
  *  - If an enemy is within a certain distance of a player, attack that enemy
  *  - If the switch is within a range of 30 units from the bot, move onto the switch
  */
-export async function processTick(rg) {
+export async function runTurn(rg) {
 
   if(rg.getState().sceneName !== "BossRoom") return;
 
