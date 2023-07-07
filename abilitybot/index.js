@@ -1,33 +1,22 @@
 import { CharInfo } from "../bossroom";
 
-let charType = Math.round(Math.random() * 1000000) % 4;
-
-/**
- * Defines the type of character that the game should use for this bot.
- */
- export function getCharacterType() {
-  return CharInfo.type[charType];
-}
-
-export function configureBot(rgObject) {
-  console.log(`Unity bot configureBot function called, charType: ${charType} - characterType: ${rgObject.characterType}`);
-  charType = CharInfo.type.indexOf(rgObject.characterType);
-}
-
-let rg = null;
-
 let CURRENT_ABILITY = 0;
-
 let lastEnemyId = -1;
+let charType;
 
-export async function runTurn(rgObject) {
+export function configureBot(rg) {
+  rg.characterType = CharInfo.type[Math.round(Math.random() * 1000000) % 4];
+}
 
-  rg = rgObject;
+export async function processTick(rg) {
+
+  // The character type we request may not be the one we actually get
+  charType = CharInfo.type.indexOf(rg.characterType);
 
   if (rg.getState().sceneName === "BossRoom") {
 
     // select 1 ability per update
-    await selectAbility();
+    await selectAbility(rg);
 
     // TODO: Add script sensors to the door and button so that a bot can walk to a button if door not open
   }
@@ -36,7 +25,7 @@ export async function runTurn(rgObject) {
 /**
  * Selects an ability for this character, and queues that action.
  */
-async function selectAbility() {
+async function selectAbility(rg) {
 
   // Select an ability
   const abilities = CharInfo.abilities[charType];
@@ -56,18 +45,26 @@ async function selectAbility() {
   } 
   else if (targetType === 1) {
     // The ability requires an enemy.
-    // Select the most recently referenced enemy or the nearest enemy.
-    const randomEnemy = await rg.findNearestEntity(null, null, (entity) => { return entity.team === 1 && !entity.broken } )
-    if (randomEnemy) {
-      currentTarget = randomEnemy;
-      lastEnemyId = randomEnemy.id;
-    } else {
-      lastEnemyId = -1;
-      return;
+    
+    if(lastEnemyId && rg.entityExists(lastEnemyId)) {
+      // First, try selecting the most recently-referenced enemy
+      currentTarget = await rg.getState(lastEnemyId);
+    }
+    else {
+      // If there was no recent enemy id, or if it's no longer available in the state then find the nearest enemy instead
+      currentTarget = await rg.findNearestEntity(null, null, (entity) => { return entity.team === 1 && !entity.broken } )
+      if(!currentTarget) {
+        lastEnemyId = -1;
+        return;
+      }
+      lastEnemyId = currentTarget.id;
     }
   } else {
     // Otherwise, this ability requires an ally - select the closest one
-    const ally = await rg.findNearestEntity(null, null, (entity) => { return entity.team === 0 });
+    currentTarget = await rg.findNearestEntity(null, null, (entity) => { return entity.team === 0 });
+    if(!currentTarget) {
+      return;
+    }
   }
   
   rg.performAction("PerformSkill", {
