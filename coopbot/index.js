@@ -1,6 +1,7 @@
+import { CharInfo } from "../bossroom";
 
 export function configureBot(rg) {
-  rg.characterType = 3; // fixed to rogue character
+  rg.characterType = CharInfo.type[3]; // fixed to rogue character
 }
 
 /**

@@ -1,77 +1,65 @@
 import { CharInfo } from "../bossroom";
 
-let CURRENT_ABILITY = 0;
-let lastEnemyId = -1;
-let charType;
-
 export function configureBot(rg) {
-  rg.characterType = CharInfo.type[Math.round(Math.random() * 1000000) % 4];
+    rg.automatedTestMode = true;
+    rg.characterType = CharInfo.type[0]; // healer
 }
 
-export async function processTick(rg) {
+export async function startScenario(rg) {
 
-  // The character type we request may not be the one we actually get
-  charType = CharInfo.type.indexOf(rg.characterType);
+    const charType = CharInfo.type.indexOf(rg.characterType);
 
-  if (rg.getState().sceneName === "BossRoom") {
+    // validate that we're in the game
+    await rg.waitForScene("BossRoom");
 
-    // select 1 ability per update
-    await selectAbility(rg);
+    // find the closest human player and use a heal ability on them
+    let target = await rg.findNearestEntity("HumanPlayer");
+    await rg.entityExists(target);
 
-    // TODO: Add script sensors to the door and button so that a bot can walk to a button if door not open
-  }
-}
+    let skillId = CharInfo.abilities[charType][1]
+    rg.performAction("PerformSkill", {
+        skillId: skillId,
+        targetId: target.id,
+        xPosition: target.position.x,
+        yPosition: target.position.y,
+        zPosition: target.position.z
+    })
 
-/**
- * Selects an ability for this character, and queues that action.
- */
-async function selectAbility(rg) {
+    // validate that the heal recovers from cooldown
+    await rg.entityHasAttribute(rg.getBot(), ["isOnCooldown", `ability${skillId}Available`], true); 
 
-  // Select an ability
-  const abilities = CharInfo.abilities[charType];
-  const abilityIndex = CURRENT_ABILITY % abilities.length;
-  const ability = abilities[abilityIndex];
 
-  if(!rg.entityHasAttribute(rg.getBot(), ["isOnCooldown", `ability${ability + 1}Available`], true)) {
-    return;
-  }
+    // find the closest enemy and use the basic attack until it dies
+    // measure from the position of a known imp, 
+    // so the character doesn't try to attack through a wall
+    target = await rg.findNearestEntity("Imp", { x: -3.95, y: 0.0, z: -15.5 });
+    await rg.entityExists(target);
+    await rg.entityHasAttribute(target, "health", 15);
 
-  const targetType = CharInfo.abilityTargets[charType][abilityIndex]
-  let currentTarget;
+    // approach the entity
+    rg.performAction("FollowObject", {
+        targetId: target.id,
+        range: 5,
+    });
 
-  if(targetType === -1) 
-  {
-    currentTarget = null;
-  } 
-  else if (targetType === 1) {
-    // The ability requires an enemy.
-    
-    currentTarget = await rg.getState(lastEnemyId);
-    if(!currentTarget) {
-      // If there was no recent enemy id, or if it's no longer available in the state then find the nearest enemy instead
-      currentTarget = await rg.findNearestEntity(null, null, (entity) => { return entity.team === 1 && !entity.broken } )
-      if(!currentTarget) {
-        lastEnemyId = -1;
-        return;
-      }
-      lastEnemyId = currentTarget.id;
+    // queue three attacks
+    // each one should do 5 damage
+    skillId = CharInfo.abilities[charType][0];
+    const args = {
+        skillId: skillId,
+        targetId: target.id,
+        xPosition: target.position.x,
+        yPosition: target.position.y,
+        zPosition: target.position.z
     }
-  } else {
-    // Otherwise, this ability requires an ally - select the closest one
-    currentTarget = await rg.findNearestEntity(null, null, (entity) => { return entity.team === 0 });
-    if(!currentTarget) {
-      return;
-    }
-  }
-  
-  rg.performAction("PerformSkill", {
-    skillId: ability,
-    targetId: currentTarget?.id,
-    xPosition: currentTarget?.position?.x,
-    yPosition: currentTarget?.position?.y,
-    zPosition: currentTarget?.position?.z
-  });
+    rg.performAction("PerformSkill", args)
+    await rg.entityHasAttribute(target, "health", 10);
 
-  CURRENT_ABILITY++;
+    rg.performAction("PerformSkill", args)
+    await rg.entityHasAttribute(target, "health", 5);
 
+    rg.performAction("PerformSkill", args)
+    await rg.entityDoesNotExist(target);
+
+    rg.complete();
 }
