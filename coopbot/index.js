@@ -1,17 +1,9 @@
-import { CharInfo } from "../bossroom";
 
-let charType = 3; // Archer
-
-/**
- * Defines the type of character that the game should use for this bot (in this case an Archer)
- */
-export function getCharacterType() {
-  return CharInfo.type[charType];
-}
-
-export function configureBot(characterType) {
-  console.log(`Unity bot configureBot function called, charType: ${charType} - characterType: ${characterType}`);
-  charType = CharInfo.type.indexOf(characterType);
+export function configureBot(rg) {
+  rg.automatedTestMode = true;
+  rg.isSpawnable = false;
+  rg.characterType = 3; // Archer
+  rg.lifecycle = "PERSISTENT";
 }
 
 /**
