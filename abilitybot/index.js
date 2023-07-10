@@ -13,7 +13,7 @@ export function configureBot(rg) {
 export async function processTick(rg) {
 
   // The character type we request may not be the one we actually get
-  const characterType = JSON.parse(rg.characterConfig).characterType;
+  const characterType = rg.characterConfig.characterType;
   if (characterType) {
     charType = CharInfo.type.indexOf(characterType);
     console.log(`Unity bot configureBot function called, charType: ${charType} - characterType: ${characterType}`);
