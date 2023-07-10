@@ -4,8 +4,10 @@ let rg = null;
 
 export function configureBot(rg) {
   rg.isSpawnable = false;
-  rg.characterType = CharInfo.type[1]; // fixed to rogue character
   rg.lifecycle = "PERSISTENT";
+  rg.characterConfig = {
+    characterType: CharInfo.type[1]
+  }; // fixed to rogue character
 }
 
 // flags for clicking the 6 buttons we need to click to start the game

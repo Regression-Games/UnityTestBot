@@ -1,12 +1,19 @@
 import { CharInfo } from "../bossroom";
 
 export function configureBot(rg) {
-    rg.characterType = CharInfo.type[0]; // healer
+    rg.characterConfig = {
+        characterType: CharInfo.type[0]
+    }; // healer
 }
 
 export async function startScenario(rg) {
 
-    const charType = CharInfo.type.indexOf(rg.characterType);
+    let charType = CharInfo.type.indexOf(rg.characterConfig.characterType);
+    const overrideType = JSON.parse(rg.characterConfig).characterType;
+    if (overrideType) {
+        charType = CharInfo.type.indexOf(overrideType);
+        console.log(`Unity bot configureBot function called, charType: ${charType} - characterType: ${characterType}`);
+    }
 
     // validate that we're in the game
     await rg.waitForScene("BossRoom");
