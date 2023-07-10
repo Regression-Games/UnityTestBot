@@ -1,45 +1,15 @@
 import { CharInfo } from "../bossroom";
 
-let rg = null;
-
-/**
- * Defines the type of character that the game should use for this bot.
- */
- export function getCharacterType() {
-  return CharInfo.type[1]; // fixed to rogue character
-}
-
-/**
- * One of ...
- * MANAGED - Server disconnects/ends bot on match/game-scene teardown
- * PERSISTENT - Bot is responsible for disconnecting / ending itself
- */
-export function getBotLifecycle() {
-  return 'PERSISTENT';
-}
-
-/**
- * @returns {boolean} true if I'm an in-game character, or false if I'm an invisible navigator/observer/etc.
- */
-export function isSpawnable() {
-  return false;
-}
-
-/**
- * Let server know if I have finished my processing
- * @returns {boolean} true if done processing and ready to be torn down
- */
- export function isComplete() {
-  return rg ? rg.isComplete() : false;
+export function configureBot(rg) {
+  rg.isSpawnable = false;
+  rg.characterType = CharInfo.type[1]; // fixed to rogue character
+  rg.lifecycle = "PERSISTENT";
 }
 
 /**
  * Start running my test scenario
  */
-export async function configureBot(rgObject) {
-
-  rg = rgObject;
-  rg.automatedTestMode = true;
+export async function startScenario(rg) {
 
   // validate we're on the main menu
   await rg.waitForScene("MainMenu");

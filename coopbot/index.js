@@ -1,17 +1,7 @@
 import { CharInfo } from "../bossroom";
 
-let charType = 3; // Archer
-
-/**
- * Defines the type of character that the game should use for this bot (in this case an Archer)
- */
-export function getCharacterType() {
-  return CharInfo.type[charType];
-}
-
-export function configureBot(characterType) {
-  console.log(`Unity bot configureBot function called, charType: ${charType} - characterType: ${characterType}`);
-  charType = CharInfo.type.indexOf(characterType);
+export function configureBot(rg) {
+  rg.characterType = CharInfo.type[3]; // fixed to rogue character
 }
 
 /**
@@ -21,7 +11,7 @@ export function configureBot(characterType) {
  *  - If an enemy is within a certain distance of a player, attack that enemy
  *  - If the switch is within a range of 30 units from the bot, move onto the switch
  */
-export async function runTurn(rg) {
+export async function processTick(rg) {
 
   if(rg.getState().sceneName !== "BossRoom") return;
 
