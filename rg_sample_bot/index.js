@@ -1,11 +1,3 @@
-/**
- * Defines the type of character that the game should use for this bot.
- */
-export function getCharacterConfig() {
-  return {
-    "speed": "2000"
-  };
-}
 
 export function configureBot(rg) {
   rg.characterConfig = {
