@@ -16,7 +16,7 @@ export async function processTick(rg) {
   const characterType = rg.characterConfig.characterType;
   if (characterType) {
     charType = CharInfo.type.indexOf(characterType);
-    console.log(`Unity bot configureBot function called, charType: ${charType} - characterType: ${characterType}`);
+    console.log(`Character type has been override, updating - characterType: ${characterType}`);
   }
 
   if (rg.getState().sceneName === "BossRoom") {

@@ -9,11 +9,6 @@ export function configureBot(rg) {
 export async function startScenario(rg) {
 
     let charType = CharInfo.type.indexOf(rg.characterConfig.characterType);
-    const overrideType = JSON.parse(rg.characterConfig).characterType;
-    if (overrideType) {
-        charType = CharInfo.type.indexOf(overrideType);
-        console.log(`Unity bot configureBot function called, charType: ${charType} - characterType: ${characterType}`);
-    }
 
     // validate that we're in the game
     await rg.waitForScene("BossRoom");
