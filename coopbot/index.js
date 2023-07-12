@@ -1,7 +1,10 @@
 import { CharInfo } from "../bossroom";
 
 export function configureBot(rg) {
-  rg.characterType = CharInfo.type[3]; // fixed to rogue character
+  rg.characterConfig = {
+    characterType: CharInfo.type[3]
+  }; // fixed to archer character
+  console.log("Configuring bot with character type of " + rg.characterConfig.characterType)
 }
 
 /**

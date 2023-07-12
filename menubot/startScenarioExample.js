@@ -2,8 +2,10 @@ import { CharInfo } from "../bossroom";
 
 export function configureBot(rg) {
   rg.isSpawnable = false;
-  rg.characterType = CharInfo.type[1]; // fixed to rogue character
   rg.lifecycle = "PERSISTENT";
+  rg.characterConfig = {
+    characterType: CharInfo.type[1]
+  }; // fixed to rogue character
 }
 
 /**

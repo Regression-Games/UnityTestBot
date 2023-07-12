@@ -1,12 +1,14 @@
 import { CharInfo } from "../bossroom";
 
 export function configureBot(rg) {
-    rg.characterType = CharInfo.type[0]; // healer
+    rg.characterConfig = {
+        characterType: CharInfo.type[0]
+    }; // healer
 }
 
 export async function startScenario(rg) {
 
-    const charType = CharInfo.type.indexOf(rg.characterType);
+    let charType = CharInfo.type.indexOf(rg.characterConfig.characterType);
 
     // validate that we're in the game
     await rg.waitForScene("BossRoom");

@@ -5,13 +5,19 @@ let lastEnemyId = -1;
 let charType;
 
 export function configureBot(rg) {
-  rg.characterType = CharInfo.type[Math.round(Math.random() * 1000000) % 4];
+  rg.characterConfig = {
+    characterType: CharInfo.type[Math.round(Math.random() * 1000000) % 4]
+  };
 }
 
 export async function processTick(rg) {
 
   // The character type we request may not be the one we actually get
-  charType = CharInfo.type.indexOf(rg.characterType);
+  const characterType = rg.characterConfig.characterType;
+  if (characterType) {
+    charType = CharInfo.type.indexOf(characterType);
+    console.log(`Character type has been set: ${characterType}`);
+  }
 
   if (rg.getState().sceneName === "BossRoom") {
 
