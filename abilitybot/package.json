@@ -1,7 +1,7 @@
 {
   "name": "rg-unity-bossroom-ability",
   "version": "1.0.0",
-  "description": "A simple example for getting started with the rg-bot package with JavaScript.",
+  "description": "PlayTest bot that cycles through its abilities.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

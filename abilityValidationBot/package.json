@@ -1,7 +1,7 @@
 {
-  "name": "rg-unity-bossroom-menu",
+  "name": "rg-unity-bossroom-ability-validation",
   "version": "1.0.0",
-  "description": "PlayTest bot that navigates from the main menu to the dungeon.",
+  "description": "Validation bot that tests the casting of abilities.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
