@@ -1,5 +1,5 @@
 {
-  "name": "rg-unity-bossroom-menu",
+  "name": "rg-unity-bossroom-menu-validation",
   "version": "1.0.0",
   "description": "Validation bot that tests menu inputs from the main menu to the dungeon.",
   "main": "index.js",
