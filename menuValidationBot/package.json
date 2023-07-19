@@ -1,7 +1,7 @@
 {
-  "name": "rg-unity-bossroom-menu",
+  "name": "rg-unity-bossroom-menu-validation",
   "version": "1.0.0",
-  "description": "PlayTest bot that navigates from the main menu to the dungeon.",
+  "description": "Validation bot that tests menu inputs from the main menu to the dungeon.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
