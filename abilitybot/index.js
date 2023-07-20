@@ -18,7 +18,7 @@ export async function processTick(rg) {
     const newCharType = CharInfo.type.indexOf(characterType);
     if (charType != newCharType) {
       charType = newCharType;
-      console.log(`Character type has been set: ${characterType}`);
+      // console.log(`Character type has been set: ${characterType}`);
     }
     // do not log if already the same
   }
