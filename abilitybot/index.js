@@ -8,7 +8,6 @@ export function configureBot(rg) {
   rg.characterConfig = {
     characterType: CharInfo.type[Math.round(Math.random() * 1000000) % 4]
   };
-  console.log("CONFIGURE BOT WAS CALLED")
 }
 
 export async function processTick(rg) {
