@@ -38,7 +38,7 @@ export async function processTick(rg) {
 async function selectAbility(rg) {
 
   // Select an ability
-  if (charType>=0 && charType < CharInfo.abilities.length) {
+  if (charType >= 0 && charType < CharInfo.abilities.length) {
     const abilities = CharInfo.abilities[charType];
     if (abilities) {
       const abilityIndex = CURRENT_ABILITY % abilities.length;
