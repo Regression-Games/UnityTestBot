@@ -21,17 +21,17 @@ export async function processTick(rg) {
   const currentPosition = rg.getBot().position;
 
   // if the bot is standing on a switch, then do nothing
-  const floorSwitch = await rg.findEntity("FloorSwitch");
-  if(floorSwitch && await rg.entityHasAttribute(floorSwitch, "isOn", true)) return;
+  // const floorSwitch = await rg.findEntity("FloorSwitch");
+  // if(floorSwitch && await rg.entityHasAttribute(floorSwitch, "isOn", true)) return;
 
-  // if the switch is within range of 30 units from the bot, then move onto it
-  if(floorSwitch && rg.MathFunctions.distanceSq(currentPosition, floorSwitch.position) < 30) {
-    rg.performAction("FollowObject", {
-      targetId: floorSwitch.id,
-      range: 0.1
-    });
-    return;
-  }
+  // // if the switch is within range of 30 units from the bot, then move onto it
+  // if(floorSwitch && rg.MathFunctions.distanceSq(currentPosition, floorSwitch.position) < 30) {
+  //   rg.performAction("FollowObject", {
+  //     targetId: floorSwitch.id,
+  //     range: 0.1
+  //   });
+  //   return;
+  // }
 
   // if the bot is not near the human player, then move within range of that player
   const humanPlayer = await rg.findEntity("HumanPlayer");
