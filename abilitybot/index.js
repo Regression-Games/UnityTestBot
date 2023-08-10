@@ -44,7 +44,7 @@ async function selectAbility(rg) {
       const abilityIndex = CURRENT_ABILITY % abilities.length;
       const ability = abilities[abilityIndex];
 
-      if (!rg.entityHasAttribute(rg.getBot(), ["isOnCooldown", `ability${ability + 1}Available`], true)) {
+      if (!rg.entityHasAttribute(rg.getBot(), ["isOnCooldown", `ability${ability + 1}Available`], true, false)) {
         return;
       }
 
@@ -61,7 +61,7 @@ async function selectAbility(rg) {
           // If there was no recent enemy id, or if it's no longer available in the state then find the nearest enemy instead
           currentTarget = await rg.findNearestEntity(null, null, (entity) => {
             return entity.team === 1 && !entity.broken
-          })
+          }, false)
           if (!currentTarget) {
             lastEnemyId = -1;
             return;
@@ -72,7 +72,7 @@ async function selectAbility(rg) {
         // Otherwise, this ability requires an ally - select the closest one
         currentTarget = await rg.findNearestEntity(null, null, (entity) => {
           return entity.team === 0
-        });
+        }, false);
         if (!currentTarget) {
           return;
         }
