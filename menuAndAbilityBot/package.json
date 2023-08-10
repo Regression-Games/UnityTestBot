@@ -1,7 +1,7 @@
 {
   "name": "rg-unity-bossroom-menu",
   "version": "1.0.0",
-  "description": "PlayTest bot that navigates from the main menu to the dungeon.",
+  "description": "PlayTest bot that navigates from the main menu to the dungeon and then controls the human player character.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
