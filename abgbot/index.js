@@ -10,9 +10,11 @@ export function configureBot(rg) {
   };
 }
 
+let counter = 0
 export async function processTick(rg) {
+  console.log('Counter: ' + counter);
+  ++counter;
 
-  console.log("ABG")
   // The character type we request may not be the one we actually get
   const characterType = rg.characterConfig.characterType;
   if (characterType) {
