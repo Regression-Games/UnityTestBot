@@ -1,12 +1,17 @@
 import { CharInfo } from "../bossroom";
 
+console.log("VON BOT HAS LOADED")
+
 export function configureBot(rg) {
+    console.log("VON CONFIGURE BOT CALLED")
     rg.characterConfig = {
         characterType: CharInfo.type[0]
     }; // healer
 }
 
 export async function startScenario(rg) {
+
+    console.log("VON INSIDE START SCENARIO")
 
     let charType = CharInfo.type.indexOf(rg.characterConfig.characterType);
 
