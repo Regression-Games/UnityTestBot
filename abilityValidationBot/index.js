@@ -15,7 +15,7 @@ export async function startScenario(rg) {
 
     rg.recordValidation("This is a passing test", "PASS", {icon: "sword"})
     rg.recordValidation("This is a failed test", "FAIL", {icon: "health"})
-    rg.recordValidation("This is a warning test", "WARN", {icon: "location"})
+    rg.recordValidation("This is a warning test", "WARNING", {icon: "location"})
 
     let charType = CharInfo.type.indexOf(rg.characterConfig.characterType);
 
