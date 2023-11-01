@@ -13,6 +13,10 @@ export async function startScenario(rg) {
 
     console.log("VON INSIDE START SCENARIO")
 
+    rg.recordValidation("This is a passing test", ValidationResults.PASS, {icon: "sword"})
+    rg.recordValidation("This is a failed test", ValidationResults.FAIL, {icon: "health"})
+    rg.recordValidation("This is a warning test", ValidationResults.WARN, {icon: "location"})
+
     let charType = CharInfo.type.indexOf(rg.characterConfig.characterType);
 
     // validate that we're in the game
